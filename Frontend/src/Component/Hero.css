@@ -1,0 +1,506 @@
+/* ════════════════════════════════════════════════════════════
+   Hero.css — styles extracted from Hero.jsx
+   Truly dynamic values (state-driven opacity/transform/filter)
+   are left inline in the JSX; everything static lives here.
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Section ── */
+.hero-section {
+  background: #0A0A0A;
+  min-height: 100vh;
+  padding-top: 72px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-preload {
+  display: none;
+}
+
+.hero-glow {
+  position: absolute;
+  top: 15%;
+  left: 3%;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Main grid ──
+   Left column widened (1.3fr vs 1fr) so the two-line headline below
+   has enough room to fit "We Edit Stories That" / "Stay With You"
+   on exactly two rows without re-wrapping further. */
+.hero-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 56px 56px 32px;
+  width: 100%;
+  gap: 60px;
+  align-items: flex-start;
+}
+
+/* ── Left column ── */
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.hero-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: inline-block;
+}
+
+.hero-eyebrow-text {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Max size brought down from 80px to 52px (and the vw scaling factor
+   tightened to match) so each forced <br/> line in Hero.jsx actually
+   fits on a single row at the new column width instead of wrapping
+   again on its own. */
+.hero-headline {
+  font-family: var(--font-heading);
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #F5F0E8;
+  margin-bottom: 28px;
+  text-transform: uppercase;
+}
+
+.hero-subcopy {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.85;
+  color: #ffffff;
+  max-width: 400px;
+  margin-bottom: 36px;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 52px;
+}
+
+.hero-ctas .btn-primary {
+  gap: 10px;
+}
+
+/* ── Stats row ── */
+.hero-stats-row {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  padding-right: 28px;
+  margin-bottom: 8px;
+}
+
+.stat-item-bordered {
+  padding-left: 28px;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--gold);
+  display: block;
+  letter-spacing: -0.01em;
+}
+
+.stat-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.28);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 3px;
+}
+
+/* ── Right column: slider ── */
+.slider-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(201, 168, 76, 0.18);
+  aspect-ratio: 16 / 10;
+  background: #111;
+  margin-bottom: 10px;
+}
+
+/* Intro flash overlay */
+.intro-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.intro-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  will-change: opacity, transform;
+}
+
+/* Shared dark gradient overlay (used on intro frames and on the main slider) */
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+
+.gradient-overlay.z-2 {
+  z-index: 2;
+}
+
+/* Slider wrapper (fades in once intro completes) */
+.slider-wrapper {
+  position: absolute;
+  inset: 0;
+  will-change: opacity;
+}
+
+.slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  filter: brightness(0.72) contrast(1.05);
+  will-change: opacity, transform, filter;
+}
+
+/* ── Camera-click / shutter-flash slide transition ──
+   The swap itself is instant (0s delay) — clicking or autoplay changes
+   `active` immediately. Only the newly-mounted image plays a quick
+   scale + brightness + opacity entrance, like a fast camera shutter,
+   with a synced white flash pulse. No horizontal/vertical movement. */
+
+@keyframes shutterIn {
+  0%   { opacity: 0;    transform: scale(1.035); filter: brightness(1.6) contrast(1.05); }
+  45%  { opacity: 0.75; transform: scale(1.015); filter: brightness(1.05) contrast(1.05); }
+  100% { opacity: 1;    transform: scale(1);     filter: brightness(0.72) contrast(1.05); }
+}
+
+.shutter-in {
+  animation: shutterIn 140ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* White flash pulse, layered above the image/gradient but below the
+   play button and text so controls never get washed out. */
+.shutter-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+@keyframes shutterFlashPulse {
+  0%   { opacity: 0; }
+  25%  { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+
+.shutter-flash.flash-active {
+  animation: shutterFlashPulse 120ms ease-out;
+}
+
+/* Center play button */
+.play-button-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 3;
+}
+
+.play-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.12);
+  border: 1.5px solid rgba(201, 168, 76, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.play-btn:hover {
+  background: rgba(201, 168, 76, 0.28);
+  transform: scale(1.1);
+}
+
+.play-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--gold);
+  margin-left: 3px;
+}
+
+.play-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Slide label — bottom left */
+.slide-info {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.slide-tag {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.slide-name {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 600;
+  color: #F5F0E8;
+}
+
+/* Slide counter — bottom right */
+.slide-counter {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.slide-counter-text {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.1em;
+}
+
+.counter-active {
+  color: var(--gold);
+}
+
+/* Corner brackets */
+.corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  opacity: 0.55;
+  z-index: 4;
+}
+
+.corner-tl {
+  top: 10px;
+  left: 10px;
+  border-top: 1.5px solid var(--gold);
+  border-left: 1.5px solid var(--gold);
+}
+
+.corner-tr {
+  top: 10px;
+  right: 10px;
+  border-top: 1.5px solid var(--gold);
+  border-right: 1.5px solid var(--gold);
+}
+
+.corner-bl {
+  bottom: 10px;
+  left: 10px;
+  border-bottom: 1.5px solid var(--gold);
+  border-left: 1.5px solid var(--gold);
+}
+
+.corner-br {
+  bottom: 10px;
+  right: 10px;
+  border-bottom: 1.5px solid var(--gold);
+  border-right: 1.5px solid var(--gold);
+}
+
+/* ── Filmstrip thumbnail row ── */
+.filmstrip {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.nav-btn {
+  width: 34px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #555;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.nav-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.nav-icon-prev {
+  width: 13px;
+  height: 13px;
+  transform: rotate(180deg);
+}
+
+.nav-icon-next {
+  width: 13px;
+  height: 13px;
+}
+
+.thumb {
+  flex: 1 1 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  opacity: 0.45;
+  transition: opacity 0.25s, border-color 0.25s;
+  aspect-ratio: 16 / 9;
+  position: relative;
+}
+
+.thumb:hover {
+  opacity: 0.75;
+}
+
+.thumb-active {
+  border: 2px solid var(--gold);
+  opacity: 1;
+}
+
+.thumb-active:hover {
+  opacity: 1;
+}
+
+.thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.65);
+  pointer-events: none;
+}
+
+.thumb-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+}
+
+/* ── Social strip ── */
+.hero-social {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 56px 32px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.social-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.18);
+}
+
+.social-divider {
+  width: 20px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.social-link {
+  color: rgba(255, 255, 255, 0.22);
+  transition: color 0.2s;
+}
+
+.social-link:hover {
+  color: var(--gold);
+}
+
+.social-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    padding: 40px 24px 24px !important;
+    gap: 40px !important;
+  }
+  .hero-right-col {
+    display: block;
+  }
+  .hero-stats-row {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .hero-social {
+    padding: 0 24px 24px !important;
+  }
+}

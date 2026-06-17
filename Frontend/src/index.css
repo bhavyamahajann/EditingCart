@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@import "tailwindcss";
+
+/* ─── Design tokens ─────────────────────────────────────────── */
+:root {
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  --gold:         #C9A84C;
+  --gold-light:   #E2C46A;
+  --gold-dark:    #9C7A2A;
+  --bg:           #0A0A0A;
+  --bg-card:      #111111;
+  --bg-card-2:    #161616;
+  --border:       rgba(255,255,255,0.07);
+  --border-gold:  rgba(201,168,76,0.25);
+  --text-muted:   #6B6B6B;
+  --text-sub:     #9A9A9A;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg);
+  color: #F0EDE8;
+  font-family: var(--font-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar               { width: 5px; }
+::-webkit-scrollbar-track         { background: #0A0A0A; }
+::-webkit-scrollbar-thumb         { background: #2A2A2A; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover   { background: var(--gold-dark); }
+
+/* ─── Typography helpers ────────────────────────────────────── */
+.font-heading { font-family: var(--font-heading); }
+.font-body    { font-family: var(--font-body); }
+
+/* ─── Colour helpers ────────────────────────────────────────── */
+.text-gold      { color: var(--gold); }
+.text-gold-muted{ color: var(--gold-dark); }
+
+.gold-text {
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Cards ─────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.card-hover {
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.card-hover:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px var(--border-gold);
+}
+
+/* ─── Buttons ───────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--gold);
+  color: #0A0A0A;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s, box-shadow 0.25s;
+}
+.btn-primary:hover {
+  background: var(--gold-light);
+  box-shadow: 0 8px 32px rgba(201,168,76,0.3);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: #D0CCC4;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 13px 32px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.25s, color 0.25s;
+}
+.btn-ghost:hover {
+  border-color: var(--border-gold);
+  color: var(--gold);
+}
+
+/* ─── Section label ─────────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ─── Divider line ───────────────────────────────────────────── */
+.line-gold {
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  margin-top: 20px;
+  margin-bottom: 32px;
+}
+
+/* ─── Animations ─────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-1 { animation: fade-up 0.8s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-2 { animation: fade-up 0.8s cubic-bezier(0.22,1,0.36,1) 0.12s both; }
+.anim-3 { animation: fade-up 0.8s cubic-bezier(0.22,1,0.36,1) 0.22s both; }
+
+@keyframes bar-pulse {
+  0%, 100% { transform: scaleY(0.35); }
+  50%       { transform: scaleY(1); }
+}
+@keyframes playhead-move {
+  0%   { left: 0%; }
+  100% { left: 100%; }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,291 @@
+/* ============================================================
+   Navbar.css  –  Editing Cart  |  Minimal & Clean
+   ============================================================ */
+
+/* ── Base header ── */
+.nb-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background    0.4s ease,
+    border-color  0.4s ease,
+    backdrop-filter 0.4s ease;
+}
+
+.nb-header--scrolled {
+  background:     rgba(10, 10, 10, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Inner container ── */
+.nb-inner {
+  max-width:      1280px;
+  margin:         0 auto;
+  padding:        0 40px;
+  height:         72px;
+  display:        flex;
+  align-items:    center;
+  justify-content: space-between;
+}
+
+/* ============================================================
+   Logo
+   ============================================================ */
+.nb-logo {
+  display:     flex;
+  align-items: center;
+  gap:         10px;
+  background:  none;
+  border:      none;
+  cursor:      pointer;
+  padding:     0;
+  opacity:     0;
+  transform:   translateX(-10px);
+  transition:  opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* triggered after mount */
+.nb-logo--ready {
+  opacity:   1;
+  transform: translateX(0);
+}
+
+.nb-logo__icon {
+  width:           32px;
+  height:          32px;
+  background:      #C9A84C;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  border-radius:   4px;
+  transition:      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                   box-shadow 0.35s ease;
+}
+
+.nb-logo:hover .nb-logo__icon {
+  transform:  rotate(15deg) scale(1.08);
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.35);
+}
+
+.nb-logo__text {
+  font-family:    var(--font-heading, Georgia, serif);
+  font-size:      19px;
+  font-weight:    600;
+  color:          #F0EDE8;
+  letter-spacing: -0.01em;
+  transition:     color 0.2s;
+}
+
+.nb-logo:hover .nb-logo__text {
+  color: #C9A84C;
+}
+
+/* ============================================================
+   Desktop nav links
+   ============================================================ */
+.nb-nav {
+  display:     flex;
+  align-items: center;
+}
+
+.nb-link {
+  position:      relative;
+  display:       flex;
+  flex-direction: column;
+  align-items:   center;
+  gap:           0;
+  background:    none;
+  border:        none;
+  cursor:        pointer;
+  font-family:   var(--font-body, sans-serif);
+  font-size:     13px;
+  font-weight:   400;
+  letter-spacing: 0.04em;
+  color:         #7A7A7A;
+  padding:       8px 18px;
+  transition:    color 0.2s ease;
+}
+
+.nb-link:hover {
+  color: #F0EDE8;
+}
+
+/* active state */
+.nb-link--active {
+  color: #F0EDE8;
+}
+
+/* active dot indicator */
+.nb-link__dot {
+  display:       block;
+  width:         4px;
+  height:        4px;
+  border-radius: 50%;
+  background:    #C9A84C;
+  margin-top:    4px;
+  opacity:       0;
+  transform:     scale(0);
+  transition:    opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nb-link--active .nb-link__dot {
+  opacity:   1;
+  transform: scale(1);
+}
+
+/* ============================================================
+   CTA button
+   ============================================================ */
+.nb-cta {
+  display:        inline-flex;
+  align-items:    center;
+  justify-content: center;
+  font-family:    var(--font-body, sans-serif);
+  font-size:      11px;
+  font-weight:    600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:          #0A0A0A;
+  background:     #C9A84C;
+  border:         none;
+  cursor:         pointer;
+  padding:        11px 24px;
+  border-radius:  4px;
+  transition:     background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nb-cta:hover {
+  background:  #D4B866;
+  transform:   translateY(-1px);
+  box-shadow:  0 4px 18px rgba(201, 168, 76, 0.28);
+}
+
+.nb-cta:active {
+  transform:   translateY(0);
+  box-shadow:  none;
+}
+
+.nb-cta--full {
+  width:      100%;
+  margin-top: 16px;
+  font-size:  12px;
+  padding:    13px 24px;
+}
+
+/* ============================================================
+   Hamburger
+   ============================================================ */
+.nb-burger {
+  display:        flex;
+  flex-direction: column;
+  gap:            5px;
+  background:     none;
+  border:         none;
+  cursor:         pointer;
+  padding:        8px;
+}
+
+.nb-burger__line {
+  display:    block;
+  width:      22px;
+  height:     1.5px;
+  background: #D0CCC4;
+  border-radius: 1px;
+  transition: transform 0.3s ease, opacity 0.25s ease;
+}
+
+.nb-burger__line--top-open {
+  transform: rotate(45deg) translate(4.5px, 4.5px);
+}
+
+.nb-burger__line--mid-open {
+  opacity: 0;
+}
+
+.nb-burger__line--bot-open {
+  transform: rotate(-45deg) translate(4.5px, -4.5px);
+}
+
+/* ============================================================
+   Mobile drawer
+   ============================================================ */
+.nb-drawer {
+  overflow:   hidden;
+  max-height: 0;
+  opacity:    0;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  border-top: 1px solid transparent;
+  background: rgba(10, 10, 10, 0.97);
+}
+
+.nb-drawer--open {
+  max-height: 420px;
+  opacity:    1;
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+.nb-drawer__inner {
+  padding: 16px 24px 28px;
+}
+
+.nb-drawer__link {
+  position:     relative;
+  display:      flex;
+  align-items:  center;
+  width:        100%;
+  text-align:   left;
+  background:   none;
+  border:       none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor:       pointer;
+  font-family:  var(--font-body, sans-serif);
+  font-size:    14px;
+  font-weight:  400;
+  color:        #7A7A7A;
+  padding:      13px 8px;
+  transition:   color 0.2s ease;
+}
+
+.nb-drawer__link:hover {
+  color: #F0EDE8;
+}
+
+.nb-drawer__link--active {
+  color: #F0EDE8;
+}
+
+/* left accent bar for active mobile link */
+.nb-drawer__active-bar {
+  position:     absolute;
+  left:         0;
+  top:          50%;
+  transform:    translateY(-50%);
+  width:        2px;
+  height:       16px;
+  background:   #C9A84C;
+  border-radius: 1px;
+}
+
+/* ============================================================
+   Responsive helpers
+   ============================================================ */
+@media (min-width: 768px) {
+  .nb-show-mobile { display: none !important; }
+}
+
+@media (max-width: 767px) {
+  .nb-hide-mobile { display: none !important; }
+
+  .nb-inner {
+    padding: 0 20px;
+    height:  62px;
+  }
+}
