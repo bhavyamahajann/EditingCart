@@ -158,15 +158,7 @@ export default function About() {
                 </div>
               </div>
 
-              <p className="about-bio-text">
-                Editing Cart is a one-person post-production studio. For the past five years
-                I&apos;ve taken raw, unsorted footage — shaky gimbal shots, mismatched audio,
-                badly-lit interviews — and turned it into something people actually finish watching.
-              </p>
-              <p className="about-bio-text">
-                Every project starts the same way: understand who it&apos;s for, then cut for them,
-                not for the footage. The result is always intentional — never just &ldquo;edited.&rdquo;
-              </p>
+              
 
               <p className="about-tools-label">Tools &amp; Software</p>
               <div className="about-tools-bin" role="list">
