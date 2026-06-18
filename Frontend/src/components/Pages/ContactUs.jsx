@@ -149,20 +149,24 @@ export default function ContactUs() {
           {/* Quick-action buttons */}
           <div className="cu-hero__actions">
             <a
-              href={`https://wa.me/${WHATSAPP}?text=Hi%2C%20I%27d%20like%20to%20discuss%20a%20project.`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cu-hero__action-btn cu-hero__action-btn--wa"
-            >
-              <WhatsAppIcon />
-              WhatsApp Us
-            </a>
-            <a
               href={`mailto:${EMAIL}`}
               className="cu-hero__action-btn cu-hero__action-btn--primary"
             >
               <MailIcon />
               Send Email
+            </a>
+
+            {/* WhatsApp icon-only with ripple rings */}
+            <a
+              href={`https://wa.me/${WHATSAPP}?text=Hi%2C%20I%27d%20like%20to%20discuss%20a%20project.`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat on WhatsApp"
+              className="cu-wa-icon"
+            >
+              <span className="cu-wa-icon__ring cu-wa-icon__ring--1" aria-hidden="true" />
+              <span className="cu-wa-icon__ring cu-wa-icon__ring--2" aria-hidden="true" />
+              <WhatsAppIcon />
             </a>
           </div>
 
@@ -183,7 +187,7 @@ export default function ContactUs() {
           {/* Scroll indicator */}
           <div className="cu-hero__scroll" aria-hidden="true">
             <div className="cu-hero__scroll-line" />
-            <span className="cu-hero__scroll-text">Scroll Down</span>
+            {/* <span className="cu-hero__scroll-text">Scroll Down</span> */}
           </div>
         </div>
 
@@ -442,8 +446,72 @@ export default function ContactUs() {
         </div>
       </section>
 
-      {/* Spinner keyframe (inline because it's micro) */}
-      <style>{`@keyframes cu-spin { to { transform: rotate(360deg); } }`}</style>
+      {/* ── Styles for inline WA button ── */}
+      <style>{`
+        @keyframes cu-spin { to { transform: rotate(360deg); } }
+
+        /* WhatsApp icon-only with glow ripple rings */
+        .cu-wa-icon {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          background: rgba(37, 211, 102, 0.08);
+          border: 1.5px solid rgba(37, 211, 102, 0.5);
+          text-decoration: none;
+          color: #25D366;
+          flex-shrink: 0;
+          transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+          animation: cu-wa-bounce 2.4s cubic-bezier(0.36,0.07,0.19,0.97) infinite;
+        }
+
+        .cu-wa-icon:hover {
+          animation: none;
+          transform: scale(1.12);
+          background: rgba(37,211,102,0.18);
+          box-shadow: 0 0 20px rgba(37,211,102,0.35),
+                      0 0 40px rgba(37,211,102,0.15);
+        }
+
+        .cu-wa-icon svg {
+          width: 24px;
+          height: 24px;
+          fill: #25D366;
+          position: relative;
+          z-index: 1;
+        }
+
+        /* Expanding ripple rings */
+        .cu-wa-icon__ring {
+          position: absolute;
+          inset: -6px;
+          border-radius: 50%;
+          border: 1px solid rgba(37, 211, 102, 0.4);
+          animation: cu-wa-ripple 2s ease-out infinite;
+          pointer-events: none;
+        }
+
+        .cu-wa-icon__ring--2 {
+          inset: -14px;
+          border-color: rgba(37, 211, 102, 0.2);
+          animation-delay: 0.6s;
+        }
+
+        @keyframes cu-wa-ripple {
+          0%   { transform: scale(0.9); opacity: 0.8; }
+          100% { transform: scale(1.2); opacity: 0;   }
+        }
+
+        @keyframes cu-wa-bounce {
+          0%, 100% { transform: translateY(0);    }
+          25%       { transform: translateY(-7px); }
+          50%       { transform: translateY(-2px); }
+          75%       { transform: translateY(-5px); }
+        }
+      `}</style>
     </div>
   );
 }

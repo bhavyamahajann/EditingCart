@@ -56,6 +56,7 @@ export default function Navbar({ onNavigate, currentPage }) {
   const [activeId,           setActiveId]           = useState("home");
   const [logoAnimated,       setLogoAnimated]       = useState(false);
   const [servicesOpen,       setServicesOpen]       = useState(false);
+  const servicesTimeoutRef = useRef(null);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const observerRef = useRef(null);
 
@@ -80,6 +81,14 @@ export default function Navbar({ onNavigate, currentPage }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  const openServices  = () => {
+    if (servicesTimeoutRef.current) clearTimeout(servicesTimeoutRef.current);
+    setServicesOpen(true);
+  };
+  const closeServices = () => {
+    servicesTimeoutRef.current = setTimeout(() => setServicesOpen(false), 150);
+  };
 
   /* Active section observer — only on home page */
   useEffect(() => {
@@ -172,8 +181,8 @@ export default function Navbar({ onNavigate, currentPage }) {
               <div
                 key={link.id}
                 className="nb-dropdown"
-                onMouseEnter={() => setServicesOpen(true)}
-                onMouseLeave={() => setServicesOpen(false)}
+                onMouseEnter={openServices}
+                onMouseLeave={closeServices}
               >
                 <button
                   aria-haspopup="menu"
@@ -191,13 +200,15 @@ export default function Navbar({ onNavigate, currentPage }) {
                 <div
                   role="menu"
                   className={`nb-dropdown__panel ${servicesOpen ? "nb-dropdown__panel--open" : ""}`}
+                  onMouseEnter={openServices}
+                  onMouseLeave={closeServices}
                 >
                   <div className="nb-dropdown__eyebrow">What we do</div>
                   {SERVICES_DROPDOWN.map((item) => (
                     <button
                       key={item.id}
                       role="menuitem"
-                      onClick={() => { handleNavClick("services"); setServicesOpen(false); }}
+                      onClick={() => { setServicesOpen(false); onNavigate?.(item.id); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       className="nb-dropdown__item"
                     >
                       <div className="nb-dropdown__item-icon">{item.icon}</div>
@@ -260,7 +271,7 @@ export default function Navbar({ onNavigate, currentPage }) {
                     {SERVICES_DROPDOWN.map((item) => (
                       <button
                         key={item.id}
-                        onClick={() => handleNavClick("services")}
+                        onClick={() => { setOpen(false); onNavigate?.(item.id); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                         className="nb-drawer__subitem"
                       >
                         <div className="nb-drawer__subitem-icon">{item.icon}</div>

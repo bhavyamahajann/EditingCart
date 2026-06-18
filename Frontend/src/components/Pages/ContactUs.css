@@ -335,7 +335,7 @@
 .cu-hero__actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24px;
   flex-wrap: wrap;
   margin-bottom: 52px;
 }

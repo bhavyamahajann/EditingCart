@@ -1,19 +1,22 @@
 import { useState } from "react";
-import Intro      from "./Component/Intro";
-import Navbar     from "./Component/Navbar";
-import Hero       from "./Component/Hero";
-import Showcase   from "./Component/Showcase";
-import About      from "./Component/About";
-import Services   from "./Component/Services";
-import Portfolio  from "./Component/Portfolio";
-import Stats      from "./Component/Stats";
-import CTA        from "./Component/CTA";
-import Footer     from "./Component/Footer";
-import AboutPage  from "./components/Pages/AboutPage";
-import ContactUs  from "./components/Pages/ContactUs";
+import Intro        from "./Component/Intro";
+import Navbar       from "./Component/Navbar";
+import Hero         from "./Component/Hero";
+import Showcase     from "./Component/Showcase";
+import About        from "./Component/About";
+import Services     from "./Component/Services";
+import Portfolio    from "./Component/Portfolio";
+import Stats        from "./Component/Stats";
+import CTA          from "./Component/CTA";
+import Footer       from "./Component/Footer";
+import AboutPage    from "./components/Pages/AboutPage";
+import ContactUs    from "./components/Pages/ContactUs";
+import VideoEditing from "./components/Pages/Services/VideoEditing";
+import ThreeD       from "./components/Pages/Services/3D";
+import Cgi          from "./components/Pages/Services/Cgi";
 
 export default function App() {
-  /* introDone — flips true once on first load, never resets */
+  /* introDone flips true once on first load, never resets */
   const [introDone, setIntroDone] = useState(false);
   const [page,      setPage]      = useState("home");
 
@@ -33,12 +36,10 @@ export default function App() {
         overflow:    introDone ? "auto" : "hidden",
       }}
     >
-      {/* Intro overlay — renders only while !introDone, never re-shown */}
-      {!introDone && (
-        <Intro onDone={() => setIntroDone(true)} />
-      )}
+      {/* Intro overlay — shown only once on first load */}
+      {!introDone && <Intro onDone={() => setIntroDone(true)} />}
 
-      {/* Main site — fades in after intro completes */}
+      {/* Main site — fades in after intro */}
       <div
         style={{
           opacity:       introDone ? 1 : 0,
@@ -62,6 +63,9 @@ export default function App() {
 
         {page === "about"   && <AboutPage />}
         {page === "contact" && <ContactUs />}
+        {page === "video"   && <VideoEditing onNavigate={navigate} />}
+        {page === "3d"      && <ThreeD       onNavigate={navigate} />}
+        {page === "cgi"     && <Cgi          onNavigate={navigate} />}
 
         <Footer />
       </div>
