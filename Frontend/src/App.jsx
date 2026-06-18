@@ -14,6 +14,7 @@ import ContactUs    from "./components/Pages/ContactUs";
 import VideoEditing from "./components/Pages/Services/VideoEditing";
 import ThreeD       from "./components/Pages/Services/3D";
 import Cgi          from "./components/Pages/Services/Cgi";
+import ScrollToTop  from "./components/ScrollToTop";
 
 export default function App() {
   /* introDone flips true once on first load, never resets */
@@ -68,6 +69,7 @@ export default function App() {
         {page === "cgi"     && <Cgi          onNavigate={navigate} />}
 
         <Footer />
+        <ScrollToTop />
       </div>
     </div>
   );

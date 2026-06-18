@@ -346,20 +346,40 @@
   opacity: 0.7;
 }
 
-/* ── Two-col layout ── */
-.sp-two-col {
+/* ── Section layout ── */
+.sp-section-top {
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
+  grid-template-columns: 0.9fr 1.1fr;
   gap: 80px;
   align-items: start;
-  padding-top: 56px;
-  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
-/* left col */
-.sp-two-col > div {
+.sp-section-left {
   position: sticky;
   top: 100px;
+  padding-right: 24px;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Pills */
+.sp-section-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.sp-pill {
+  font-family: var(--font-body, sans-serif);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 6px 14px;
+  border-radius: 2px;
+  background: rgba(201,168,76,0.05);
 }
 
 .sp-body-text {
@@ -382,25 +402,27 @@
 
 .sp-step {
   display: grid;
-  grid-template-columns: 48px 1fr;
+  grid-template-columns: 52px 1fr;
   gap: 0;
-  padding: 28px 0;
+  padding: 28px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   align-items: start;
-  transition: background 0.2s;
+  transition: background 0.25s, padding-left 0.25s;
   cursor: default;
+  border-radius: 6px;
 }
 
-.sp-step:first-child { border-top: 1px solid rgba(255,255,255,0.05); }
-.sp-step:last-child  { border-bottom: none; }
+.sp-step:first-child {
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.sp-step:last-child {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
 
 .sp-step:hover {
-  background: rgba(201,168,76,0.03);
-  padding-left: 8px;
-  padding-right: 8px;
-  margin-left: -8px;
-  margin-right: -8px;
-  border-radius: 6px;
+  background: rgba(201,168,76,0.04);
+  padding-left: 28px;
 }
 
 .sp-step__num {
@@ -408,8 +430,12 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.18em;
-  color: rgba(201,168,76,0.4);
+  color: rgba(201,168,76,0.35);
   padding-top: 4px;
+}
+
+.sp-step:hover .sp-step__num {
+  color: rgba(201,168,76,0.7);
 }
 
 .sp-step__body { flex: 1; }

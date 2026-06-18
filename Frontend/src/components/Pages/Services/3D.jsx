@@ -149,23 +149,28 @@ export default function ThreeD({ onNavigate }) {
         </div>
       </section>
 
+      {/* ── What we do ── */}
       <section className="sp-section">
-        <div className="sp-section-label">What We Do</div>
-        <h2 className="sp-section-heading">Depth Without Limits</h2>
-        <div className="sp-divider" />
-        <div className="sp-two-col">
-          <div>
+        <div className="sp-section-top">
+          <div className="sp-section-left">
+            <div className="sp-section-label">What We Do</div>
+            <h2 className="sp-section-heading">Depth<br />Without Limits</h2>
             <p className="sp-body-text">
               Our 3D pipeline is built for commercial production. Whether you need a product
               launch video, an architectural walkthrough, or a full CGI title sequence —
-              we deliver at broadcast quality with competitive turnaround times.
+              we deliver at broadcast quality.
             </p>
             <p className="sp-body-text">
-              We work in Cinema 4D, Blender, and Houdini depending on the job. Every project
-              is rendered at 4K minimum, with proper motion blur, depth-of-field, and
-              photorealistic materials.
+              Cinema 4D, Blender, and Houdini depending on the job. Every project rendered
+              at 4K minimum with photorealistic materials.
             </p>
+            <div className="sp-section-pills">
+              <span className="sp-pill">4K Renders</span>
+              <span className="sp-pill">Motion Graphics</span>
+              <span className="sp-pill">Product Viz</span>
+            </div>
           </div>
+
           <ol className="sp-steps" aria-label="3D production process">
             {STEPS.map((s) => (
               <li key={s.num} className="sp-step">

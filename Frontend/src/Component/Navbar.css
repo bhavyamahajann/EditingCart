@@ -167,12 +167,12 @@
   top:             calc(100% + 12px);
   left:            50%;
   transform:       translate(-50%, -6px) scale(0.97);
-   background: rgba(18, 16, 12, 0.45);
-  border: none; 
+  background:      rgba(8, 7, 5, 0.96);
+  border:          1px solid rgba(201, 168, 76, 0.12);
   border-radius:   14px;
- box-shadow: none;  
-   backdrop-filter: blur(16px);
-   -webkit-backdrop-filter: blur(16px);
+  box-shadow:      0 20px 60px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   padding:         8px;
   opacity:         0;
   pointer-events:  none;

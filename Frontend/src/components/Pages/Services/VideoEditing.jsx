@@ -164,21 +164,25 @@ export default function VideoEditing({ onNavigate }) {
 
       {/* ── What we do ── */}
       <section className="sp-section">
-        <div className="sp-section-label">What We Do</div>
-        <h2 className="sp-section-heading">The Edit That Holds Attention</h2>
-        <div className="sp-divider" />
-        <div className="sp-two-col">
-          <div>
+        <div className="sp-section-top">
+          <div className="sp-section-left">
+            <div className="sp-section-label">What We Do</div>
+            <h2 className="sp-section-heading">The Edit That<br />Holds Attention</h2>
             <p className="sp-body-text">
               We don't just cut footage — we build narratives. From the first selects
               review to the final export, every decision is made with your audience in mind.
-              We work across all genres: weddings, brand films, documentaries, YouTube, social shorts.
             </p>
             <p className="sp-body-text">
-              Our workflow is built for speed without sacrificing quality. You get a rough cut
-              within 48 hours, then we refine together until every frame is locked.
+              Weddings, brand films, documentaries, YouTube, social shorts — our workflow
+              is built for speed without sacrificing quality.
             </p>
+            <div className="sp-section-pills">
+              <span className="sp-pill">48h First Cut</span>
+              <span className="sp-pill">4K Delivery</span>
+              <span className="sp-pill">3 Revisions</span>
+            </div>
           </div>
+
           <ol className="sp-steps" aria-label="Editing process">
             {STEPS.map((s) => (
               <li key={s.num} className="sp-step">

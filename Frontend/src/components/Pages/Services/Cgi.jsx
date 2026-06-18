@@ -149,23 +149,27 @@ export default function Cgi({ onNavigate }) {
         </div>
       </section>
 
+      {/* ── What we do ── */}
       <section className="sp-section">
-        <div className="sp-section-label">What We Do</div>
-        <h2 className="sp-section-heading">Reality, Extended.</h2>
-        <div className="sp-divider" />
-        <div className="sp-two-col">
-          <div>
+        <div className="sp-section-top">
+          <div className="sp-section-left">
+            <div className="sp-section-label">What We Do</div>
+            <h2 className="sp-section-heading">Reality,<br />Extended.</h2>
             <p className="sp-body-text">
               CGI isn't just explosions. It's the subtle set extension nobody notices.
               It's the wire that was never there. It's the product that didn't exist yet
               sitting perfectly in a real environment.
             </p>
             <p className="sp-body-text">
-              Our VFX pipeline runs on Nuke and Houdini — the same tools used on
-              feature films. We handle everything from match moving and track to
-              final composite and delivery.
+              Our VFX pipeline runs on Nuke and Houdini — the same tools used on feature films.
             </p>
+            <div className="sp-section-pills">
+              <span className="sp-pill">8K Output</span>
+              <span className="sp-pill">VFX Compositing</span>
+              <span className="sp-pill">Match Move</span>
+            </div>
           </div>
+
           <ol className="sp-steps" aria-label="CGI production process">
             {STEPS.map((s) => (
               <li key={s.num} className="sp-step">
