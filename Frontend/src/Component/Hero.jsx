@@ -26,17 +26,18 @@ const STATS = [
 ];
 
 export default function Hero() {
-  const [active, setActive] = useState(0);
-
-  /* camera-click flash — increments on every slide change to replay animation */
-  const [flashTick, setFlashTick] = useState(0);
-  const triggerFlash = () => setFlashTick((t) => t + 1);
-
-  /* intro burst — true only on first mount, auto-clears after animation */
-  const [introBurst, setIntroBurst] = useState(true);
+  const [active,    setActive]    = useState(0);
+  const [flashTick, setFlashTick] = useState(0);  // increments → rerenders flash div → animation replays
+  const [frameFlash, setFrameFlash] = useState(false); // frame border flash
 
   const hovered     = useRef(false);
   const autoplayRef = useRef(null);
+
+  const triggerFlash = () => {
+    setFlashTick((t) => t + 1);
+    setFrameFlash(true);
+    setTimeout(() => setFrameFlash(false), 210);
+  };
 
   const startAutoplay = () => {
     clearInterval(autoplayRef.current);
@@ -48,21 +49,12 @@ export default function Hero() {
     }, 3000);
   };
 
-  /* Start autoplay on mount + clear intro burst after animation */
   useEffect(() => {
-    /* Intro burst lasts 1.6s animation + tiny buffer */
-    const burstTimer = setTimeout(() => setIntroBurst(false), 1750);
-    /* Autoplay starts after burst so it doesn't conflict */
-    const autoplayStart = setTimeout(() => startAutoplay(), 1800);
-    return () => {
-      clearTimeout(burstTimer);
-      clearTimeout(autoplayStart);
-      clearInterval(autoplayRef.current);
-    };
+    startAutoplay();
+    return () => clearInterval(autoplayRef.current);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* Manual navigation — instant swap + shutter flash */
   const goTo = (idx) => {
     if (idx === active) return;
     setActive(idx);
@@ -139,7 +131,7 @@ export default function Hero() {
 
           {/* ── Main image frame ── */}
           <div
-            className="slider-frame"
+            className={`slider-frame${frameFlash ? " slider-frame--flash" : ""}`}
             onMouseEnter={() => { hovered.current = true; }}
             onMouseLeave={() => { hovered.current = false; }}
           >
@@ -149,23 +141,16 @@ export default function Hero() {
                 key={active}
                 src={SLIDES[active].src}
                 alt={SLIDES[active].label}
-                className={`slide-img ${introBurst ? "intro-slide-burst" : "shutter-in"}`}
+                className="slide-img shutter-in"
               />
             </div>
 
-            {/* Gradient overlay — always on top of image */}
+            {/* Gradient overlay */}
             <div className="gradient-overlay z-2" />
 
-            {/* ── Intro camera burst flash — only on page load ── */}
-            {introBurst && (
-              <div className="intro-burst-flash" aria-hidden="true" />
-            )}
-
-            {/* Camera-click flash pulse — remounted via flashTick key so it
-                replays instantly on every slide change, manual or auto */}
-            {!introBurst && (
-              <div key={flashTick} className="shutter-flash flash-active" aria-hidden="true" />
-            )}
+            {/* Camera-click shutter flash — key={flashTick} remounts on every
+                slide change so the animation always replays from the start */}
+            <div key={flashTick} className="shutter-flash flash-active" aria-hidden="true" />
 
             {/* Center play button */}
             <div className="play-button-wrap">

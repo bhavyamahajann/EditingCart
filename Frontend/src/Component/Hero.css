@@ -86,7 +86,7 @@
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.85;
-  color: #ffffff;
+  color: rgba(240, 237, 232, 0.5);
   max-width: 400px;
   margin-bottom: 36px;
 }
@@ -147,6 +147,21 @@
   aspect-ratio: 16 / 10;
   background: #111;
   margin-bottom: 10px;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+/* Frame flash — triggered via JS class toggle */
+.slider-frame--flash {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5),
+              0 0 0 1px rgba(255, 255, 255, 0.15);
+  animation: frameShutter 0.2s ease-out;
+}
+
+@keyframes frameShutter {
+  0%   { filter: brightness(1); }
+  20%  { filter: brightness(1.8); }
+  100% { filter: brightness(1); }
 }
 
 /* Intro flash overlay */
@@ -254,13 +269,13 @@
    Quick scale + brightness + opacity entrance. */
 
 @keyframes shutterIn {
-  0%   { opacity: 0;    transform: scale(1.035); filter: brightness(1.6) contrast(1.05); }
-  45%  { opacity: 0.75; transform: scale(1.015); filter: brightness(1.05) contrast(1.05); }
+  0%   { opacity: 0;    transform: scale(1.04);  filter: brightness(2.0) contrast(1.1); }
+  30%  { opacity: 0.9;  transform: scale(1.015); filter: brightness(1.2) contrast(1.05); }
   100% { opacity: 1;    transform: scale(1);     filter: brightness(0.72) contrast(1.05); }
 }
 
 .shutter-in {
-  animation: shutterIn 140ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: shutterIn 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* White flash pulse for normal slide changes */
@@ -270,17 +285,20 @@
   background: #fff;
   opacity: 0;
   pointer-events: none;
-  z-index: 3;
+  z-index: 20;   /* must be above gradient (z-2) and play button (z-3) */
 }
 
 @keyframes shutterFlashPulse {
-  0%   { opacity: 0; }
-  25%  { opacity: 0.4; }
-  100% { opacity: 0; }
+  0%   { opacity: 0;    }
+  15%  { opacity: 0.55; }
+  35%  { opacity: 0.15; }
+  55%  { opacity: 0.4;  }
+  75%  { opacity: 0.08; }
+  100% { opacity: 0;    }
 }
 
 .shutter-flash.flash-active {
-  animation: shutterFlashPulse 120ms ease-out;
+  animation: shutterFlashPulse 200ms ease-out forwards;
 }
 
 /* Center play button */
