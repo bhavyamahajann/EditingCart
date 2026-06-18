@@ -1,19 +1,26 @@
 import { useState } from "react";
-import Intro     from "./Component/Intro";
-import Navbar    from "./Component/Navbar";
-import Hero      from "./Component/Hero";
-import Showcase  from "./Component/Showcase";
-import About     from "./Component/About";
-import Services  from "./Component/Services";
-import Portfolio from "./Component/Portfolio";
-import Stats     from "./Component/Stats";
-import CTA       from "./Component/CTA";
-import Footer    from "./Component/Footer";
-import AboutPage from "./components/Pages/AboutPage";
+import Intro      from "./Component/Intro";
+import Navbar     from "./Component/Navbar";
+import Hero       from "./Component/Hero";
+import Showcase   from "./Component/Showcase";
+import About      from "./Component/About";
+import Services   from "./Component/Services";
+import Portfolio  from "./Component/Portfolio";
+import Stats      from "./Component/Stats";
+import CTA        from "./Component/CTA";
+import Footer     from "./Component/Footer";
+import AboutPage  from "./components/Pages/AboutPage";
+import ContactUs  from "./components/Pages/ContactUs";
 
 export default function App() {
+  /* introDone — flips true once on first load, never resets */
   const [introDone, setIntroDone] = useState(false);
-  const [page, setPage] = useState("home");
+  const [page,      setPage]      = useState("home");
+
+  const navigate = (target) => {
+    setPage(target);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div
@@ -26,8 +33,12 @@ export default function App() {
         overflow:    introDone ? "auto" : "hidden",
       }}
     >
-      <Intro onDone={() => setIntroDone(true)} />
+      {/* Intro overlay — renders only while !introDone, never re-shown */}
+      {!introDone && (
+        <Intro onDone={() => setIntroDone(true)} />
+      )}
 
+      {/* Main site — fades in after intro completes */}
       <div
         style={{
           opacity:       introDone ? 1 : 0,
@@ -35,7 +46,7 @@ export default function App() {
           pointerEvents: introDone ? "auto" : "none",
         }}
       >
-        <Navbar onNavigate={setPage} currentPage={page} />
+        <Navbar onNavigate={navigate} currentPage={page} />
 
         {page === "home" && (
           <main>
@@ -49,7 +60,8 @@ export default function App() {
           </main>
         )}
 
-        {page === "about" && <AboutPage />}
+        {page === "about"   && <AboutPage />}
+        {page === "contact" && <ContactUs />}
 
         <Footer />
       </div>

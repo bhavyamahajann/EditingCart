@@ -3,6 +3,7 @@ import { PlayIcon } from "../components/icons";
 import { NAV_LINKS } from "../constants";
 import "./Navbar.css";
 
+/* ── Services dropdown data ── */
 const SERVICES_DROPDOWN = [
   {
     id: "video",
@@ -43,7 +44,13 @@ const ChevronIcon = ({ className }) => (
   </svg>
 );
 
-export default function Navbar() {
+/**
+ * Navbar
+ * Props:
+ *   onNavigate(page: "home" | "about") — called when switching pages
+ *   currentPage: "home" | "about"
+ */
+export default function Navbar({ onNavigate, currentPage }) {
   const [scrolled,           setScrolled]           = useState(false);
   const [open,               setOpen]               = useState(false);
   const [activeId,           setActiveId]           = useState("home");
@@ -52,26 +59,31 @@ export default function Navbar() {
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const observerRef = useRef(null);
 
+  /* Scroll listener */
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* Close mobile drawer on desktop resize */
   useEffect(() => {
     const mq    = window.matchMedia("(min-width: 768px)");
-    const close = (e) => { if (e.matches) setOpen(non); };
+    const close = (e) => { if (e.matches) setOpen(false); };
     mq.addEventListener("change", close);
     return () => mq.removeEventListener("change", close);
   }, []);
 
+  /* Close dropdown on Escape */
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") setServicesOpen(false); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  /* Active section observer — only on home page */
   useEffect(() => {
+    if (currentPage !== "home") return;
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -85,17 +97,56 @@ export default function Navbar() {
       if (el) observerRef.current.observe(el);
     });
     return () => observerRef.current?.disconnect();
-  }, []);
+  }, [currentPage]);
 
+  /* Sync active indicator with current page */
+  useEffect(() => {
+    if (currentPage === "about")   setActiveId("about");
+    if (currentPage === "contact") setActiveId("contact");
+    if (currentPage === "home")    setActiveId("home");
+  }, [currentPage]);
+
+  /* Logo entrance animation */
   useEffect(() => {
     const t = setTimeout(() => setLogoAnimated(true), 300);
     return () => clearTimeout(t);
   }, []);
 
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  /* ── Navigation handler ── */
+  const handleNavClick = (id) => {
     setOpen(false);
     setServicesOpen(false);
+
+    /* "About Us" → switch to about page */
+    if (id === "about") {
+      onNavigate?.("about");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    /* "Contact Us" → switch to contact page */
+    if (id === "contact") {
+      onNavigate?.("contact");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    /* Any other link while on a sub-page → go home first, then scroll */
+    if (currentPage !== "home") {
+      onNavigate?.("home");
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }, 80);
+      return;
+    }
+
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const goHome = () => {
+    onNavigate?.("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setOpen(false);
   };
 
   return (
@@ -104,8 +155,8 @@ export default function Navbar() {
 
         {/* ── Logo ── */}
         <button
-          onClick={() => scrollTo("home")}
-          aria-label="Go to top"
+          onClick={goHome}
+          aria-label="Go to home"
           className={`nb-logo ${logoAnimated ? "nb-logo--ready" : ""}`}
         >
           <span className="nb-logo__icon">
@@ -127,6 +178,7 @@ export default function Navbar() {
                 <button
                   aria-haspopup="menu"
                   aria-expanded={servicesOpen}
+                  onClick={() => handleNavClick(link.id)}
                   className={`nb-link nb-link--dropdown ${activeId === link.id ? "nb-link--active" : ""}`}
                 >
                   <span className="nb-link__label-row">
@@ -141,12 +193,11 @@ export default function Navbar() {
                   className={`nb-dropdown__panel ${servicesOpen ? "nb-dropdown__panel--open" : ""}`}
                 >
                   <div className="nb-dropdown__eyebrow">What we do</div>
-
                   {SERVICES_DROPDOWN.map((item) => (
                     <button
                       key={item.id}
                       role="menuitem"
-                      onClick={() => { scrollTo("services"); setServicesOpen(false); }}
+                      onClick={() => { handleNavClick("services"); setServicesOpen(false); }}
                       className="nb-dropdown__item"
                     >
                       <div className="nb-dropdown__item-icon">{item.icon}</div>
@@ -161,7 +212,7 @@ export default function Navbar() {
             ) : (
               <button
                 key={link.id}
-                onClick={() => scrollTo(link.id)}
+                onClick={() => handleNavClick(link.id)}
                 className={`nb-link ${activeId === link.id ? "nb-link--active" : ""}`}
               >
                 {link.label}
@@ -172,7 +223,7 @@ export default function Navbar() {
         </nav>
 
         {/* ── Desktop CTA ── */}
-        <button onClick={() => scrollTo("contact")} className="nb-cta nb-hide-mobile">
+        <button onClick={() => handleNavClick("contact")} className="nb-cta nb-hide-mobile">
           Start a Project
         </button>
 
@@ -207,7 +258,11 @@ export default function Navbar() {
                 <div className={`nb-drawer__submenu ${mobileServicesOpen ? "nb-drawer__submenu--open" : ""}`}>
                   <div className="nb-drawer__submenu-inner">
                     {SERVICES_DROPDOWN.map((item) => (
-                      <button key={item.id} onClick={() => scrollTo(link.id)} className="nb-drawer__subitem">
+                      <button
+                        key={item.id}
+                        onClick={() => handleNavClick("services")}
+                        className="nb-drawer__subitem"
+                      >
                         <div className="nb-drawer__subitem-icon">{item.icon}</div>
                         <span className="nb-drawer__subitem-title">{item.title}</span>
                       </button>
@@ -218,7 +273,7 @@ export default function Navbar() {
             ) : (
               <button
                 key={link.id}
-                onClick={() => scrollTo(link.id)}
+                onClick={() => handleNavClick(link.id)}
                 className={`nb-drawer__link ${activeId === link.id ? "nb-drawer__link--active" : ""}`}
               >
                 {link.label}
@@ -226,7 +281,7 @@ export default function Navbar() {
               </button>
             )
           )}
-          <button onClick={() => scrollTo("contact")} className="nb-cta nb-cta--full">
+          <button onClick={() => handleNavClick("contact")} className="nb-cta nb-cta--full">
             Start a Project
           </button>
         </div>

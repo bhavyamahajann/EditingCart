@@ -7,42 +7,16 @@ import "./Hero.css";
 
 const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
-/* ── Slide data — local asset first, then Unsplash cinematic shots ── */
+/* Slide data */
 const SLIDES = [
-  {
-    src:   localImg,
-    label: "Editing Cart",
-    tag:   "Studio",
-  },
-  {
-    src:   "https://images.unsplash.com/photo-1601506521793-dc748fc80b67?w=900&q=80&fit=crop&auto=format",
-    label: "On Set Shoot",
-    tag:   "Cinematography",
-  },
-  {
-    src:    localImg2,
-    label: "Film Production",
-    tag:   "Behind the Scenes",
-  },
-  {
-    src:   localImg3,
-    label: "Directing",
-    tag:   "Film Set",
-  },
-  {
-    src:   "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=900&q=80&fit=crop&auto=format",
-    label: "Color Grading",
-    tag:   "Post Production",
-  },
+  { src: localImg,  label: "Editing Cart",    tag: "Studio"            },
+  { src: "https://images.unsplash.com/photo-1601506521793-dc748fc80b67?w=900&q=80&fit=crop&auto=format",
+                    label: "On Set Shoot",    tag: "Cinematography"    },
+  { src: localImg2, label: "Film Production", tag: "Behind the Scenes" },
+  { src: localImg3, label: "Directing",       tag: "Film Set"          },
+  { src: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=900&q=80&fit=crop&auto=format",
+                    label: "Color Grading",   tag: "Post Production"   },
 ];
-
-/* First 4 slides are the intro flash sequence */
-const INTRO_SRCS = SLIDES.slice(0, 4).map((s) => s.src);
-/* Each intro frame: 250ms visible + 120ms cross-fade = 370ms per frame */
-const INTRO_FRAME_MS  = 250;
-const INTRO_FADE_MS   = 120;
-const INTRO_TOTAL_MS  = INTRO_SRCS.length * (INTRO_FRAME_MS + INTRO_FADE_MS); // ~1480ms
-const REVEAL_FADE_MS  = 500; // slider fade-in after intro
 
 const STATS = [
   { value: "150+", label: "Projects Completed" },
@@ -53,20 +27,14 @@ const STATS = [
 
 export default function Hero() {
   const [active, setActive] = useState(0);
-  // flashTick increments on every slide change (manual or auto) to re-trigger
-  // the camera-click flash/scale-in animation — the swap itself is instant.
+
+  /* camera-click flash — increments on every slide change to replay animation */
   const [flashTick, setFlashTick] = useState(0);
   const triggerFlash = () => setFlashTick((t) => t + 1);
 
-  /* ── Intro state ── */
-  // introStep: 0-3 = which intro image is showing, 4 = done (slider visible)
-  const [introStep,     setIntroStep]     = useState(0);
-  const [introFading,   setIntroFading]   = useState(false); // cross-fade between intro frames
-  const [introDone,     setIntroDone]     = useState(false); // intro finished, show slider
-  const [sliderVisible, setSliderVisible] = useState(false); // opacity-1 after fade-in
-  const introRan = useRef(false);
+  /* intro burst — true only on first mount, auto-clears after animation */
+  const [introBurst, setIntroBurst] = useState(true);
 
-  /* Autoplay */
   const hovered     = useRef(false);
   const autoplayRef = useRef(null);
 
@@ -74,57 +42,27 @@ export default function Hero() {
     clearInterval(autoplayRef.current);
     autoplayRef.current = setInterval(() => {
       if (!hovered.current) {
-        setActive((a) => (a + 1) % SLIDES.length); // instant swap, 0s delay
+        setActive((a) => (a + 1) % SLIDES.length);
         triggerFlash();
       }
     }, 3000);
   };
 
-
-  /* Run intro once, then start autoplay */
+  /* Start autoplay on mount + clear intro burst after animation */
   useEffect(() => {
-    if (introRan.current) return;
-    introRan.current = true;
-
-    let step = 0;
-    const showNext = () => {
-      if (step >= INTRO_SRCS.length - 1) {
-        // Last frame shown — fade out intro, reveal slider
-        setTimeout(() => {
-          setIntroFading(true);                    // fade the last intro image
-          setTimeout(() => {
-            setIntroDone(true);                    // unmount intro overlay
-            setActive(0);
-            // slight delay then opacity-1
-            setTimeout(() => {
-              setSliderVisible(true);
-              startAutoplay();
-            }, 60);
-          }, REVEAL_FADE_MS);
-        }, INTRO_FRAME_MS);
-        return;
-      }
-      // Cross-fade to next frame
-      setTimeout(() => {
-        setIntroFading(true);
-        setTimeout(() => {
-          step += 1;
-          setIntroStep(step);
-          setIntroFading(false);
-        }, INTRO_FADE_MS);
-      }, INTRO_FRAME_MS);
-
-      // Schedule the frame after this one
-      setTimeout(showNext, INTRO_FRAME_MS + INTRO_FADE_MS);
+    /* Intro burst lasts 1.6s animation + tiny buffer */
+    const burstTimer = setTimeout(() => setIntroBurst(false), 1750);
+    /* Autoplay starts after burst so it doesn't conflict */
+    const autoplayStart = setTimeout(() => startAutoplay(), 1800);
+    return () => {
+      clearTimeout(burstTimer);
+      clearTimeout(autoplayStart);
+      clearInterval(autoplayRef.current);
     };
-
-    showNext();
-
-    return () => clearInterval(autoplayRef.current);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* Slider manual navigation — instant swap, 0s delay before image changes */
+  /* Manual navigation — instant swap + shutter flash */
   const goTo = (idx) => {
     if (idx === active) return;
     setActive(idx);
@@ -205,54 +143,29 @@ export default function Hero() {
             onMouseEnter={() => { hovered.current = true; }}
             onMouseLeave={() => { hovered.current = false; }}
           >
-            {/* ═══ INTRO FLASH OVERLAY — sits on top, removed after done ═══ */}
-            {!introDone && (
-              <div aria-hidden="true" className="intro-overlay">
-                {/* Render all 4 intro images stacked; only the current one is visible */}
-                {INTRO_SRCS.map((src, i) => (
-                  <img
-                    key={src}
-                    src={src}
-                    alt=""
-                    className="intro-img"
-                    style={{
-                      /* Only the active intro step is visible — fully state-driven, kept inline */
-                      opacity:    i === introStep ? (introFading ? 0 : 1) : 0,
-                      transform:  i === introStep ? (introFading ? "scale(1.05)" : "scale(1)") : "scale(1.05)",
-                      filter:     `brightness(0.72) contrast(1.05) blur(${introFading ? 3 : 0}px)`,
-                      transition: `opacity ${INTRO_FADE_MS}ms ease, transform ${INTRO_FADE_MS + 80}ms ease`,
-                    }}
-                  />
-                ))}
-                {/* Gradient overlay on intro frames */}
-                <div className="gradient-overlay" />
-              </div>
-            )}
-
-            {/* ═══ SLIDER — always rendered, fades in after intro ═══ */}
-            <div
-              className="slider-wrapper"
-              style={{
-                opacity:    introDone && sliderVisible ? 1 : 0,
-                transition: `opacity ${REVEAL_FADE_MS}ms ease`,
-              }}
-            >
-              {/* Active slide image — swaps instantly (key={active}), entrance
-                  animation auto-plays on every mount, 0s pre-swap delay */}
+            {/* ═══ SLIDER ═══ */}
+            <div className="slider-wrapper">
               <img
                 key={active}
                 src={SLIDES[active].src}
                 alt={SLIDES[active].label}
-                className="slide-img shutter-in"
+                className={`slide-img ${introBurst ? "intro-slide-burst" : "shutter-in"}`}
               />
             </div>
 
             {/* Gradient overlay — always on top of image */}
             <div className="gradient-overlay z-2" />
 
+            {/* ── Intro camera burst flash — only on page load ── */}
+            {introBurst && (
+              <div className="intro-burst-flash" aria-hidden="true" />
+            )}
+
             {/* Camera-click flash pulse — remounted via flashTick key so it
                 replays instantly on every slide change, manual or auto */}
-            <div key={flashTick} className="shutter-flash flash-active" aria-hidden="true" />
+            {!introBurst && (
+              <div key={flashTick} className="shutter-flash flash-active" aria-hidden="true" />
+            )}
 
             {/* Center play button */}
             <div className="play-button-wrap">

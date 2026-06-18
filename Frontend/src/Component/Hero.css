@@ -71,10 +71,6 @@
   color: var(--gold);
 }
 
-/* Max size brought down from 80px to 52px (and the vw scaling factor
-   tightened to match) so each forced <br/> line in Hero.jsx actually
-   fits on a single row at the new column width instead of wrapping
-   again on its own. */
 .hero-headline {
   font-family: var(--font-heading);
   font-size: clamp(36px, 4vw, 52px);
@@ -200,11 +196,62 @@
   will-change: opacity, transform, filter;
 }
 
+/* ══════════════════════════════════════════════════
+   INTRO CAMERA BURST — fires once on page load
+   Simulates rapid camera shutter clicks: the image
+   flickers in/out 4-5 times before settling, while
+   a white flash overlay pulses in sync above it.
+   ══════════════════════════════════════════════════ */
+
+/* Image flicker: rapidly alternates opacity/brightness
+   like a camera firing in burst mode */
+@keyframes cameraSlideSwap {
+  0%   { opacity: 0;    transform: scale(1.06); filter: brightness(2.2) contrast(1.1); }
+  8%   { opacity: 1;    transform: scale(1.04); filter: brightness(1.5) contrast(1.08); }
+  16%  { opacity: 0.05; transform: scale(1.04); filter: brightness(0.72) contrast(1.05); }
+  26%  { opacity: 1;    transform: scale(1.03); filter: brightness(1.4) contrast(1.08); }
+  34%  { opacity: 0.05; transform: scale(1.03); filter: brightness(0.72) contrast(1.05); }
+  44%  { opacity: 1;    transform: scale(1.02); filter: brightness(1.2) contrast(1.06); }
+  52%  { opacity: 0.1;  transform: scale(1.02); filter: brightness(0.72) contrast(1.05); }
+  62%  { opacity: 1;    transform: scale(1.01); filter: brightness(1.1) contrast(1.05); }
+  70%  { opacity: 0.2;  transform: scale(1.01); filter: brightness(0.72) contrast(1.05); }
+  82%  { opacity: 1;    transform: scale(1);    filter: brightness(0.9) contrast(1.05);  }
+  100% { opacity: 1;    transform: scale(1);    filter: brightness(0.72) contrast(1.05); }
+}
+
+.intro-slide-burst {
+  animation: cameraSlideSwap 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* White flash overlay that pulses multiple times in sync
+   with the image flicker above — gives the "camera click" feel */
+@keyframes cameraBurst {
+  0%   { opacity: 0;    }
+  6%   { opacity: 0.6;  }
+  14%  { opacity: 0;    }
+  24%  { opacity: 0.5;  }
+  32%  { opacity: 0;    }
+  42%  { opacity: 0.35; }
+  50%  { opacity: 0;    }
+  60%  { opacity: 0.2;  }
+  68%  { opacity: 0;    }
+  80%  { opacity: 0.1;  }
+  100% { opacity: 0;    }
+}
+
+.intro-burst-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  animation: cameraBurst 1.6s ease-out forwards;
+}
+
 /* ── Camera-click / shutter-flash slide transition ──
-   The swap itself is instant (0s delay) — clicking or autoplay changes
-   `active` immediately. Only the newly-mounted image plays a quick
-   scale + brightness + opacity entrance, like a fast camera shutter,
-   with a synced white flash pulse. No horizontal/vertical movement. */
+   Used for normal (post-intro) slide changes.
+   Quick scale + brightness + opacity entrance. */
 
 @keyframes shutterIn {
   0%   { opacity: 0;    transform: scale(1.035); filter: brightness(1.6) contrast(1.05); }
@@ -216,8 +263,7 @@
   animation: shutterIn 140ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* White flash pulse, layered above the image/gradient but below the
-   play button and text so controls never get washed out. */
+/* White flash pulse for normal slide changes */
 .shutter-flash {
   position: absolute;
   inset: 0;

@@ -32,6 +32,14 @@ const FEATURES = [
   },
 ];
 
+/* scrolls to a section on the home page — navigates there if needed */
+const goToSection = (id) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
 export default function AboutPage() {
   return (
     <div className="ap-wrapper">
@@ -59,11 +67,15 @@ export default function AboutPage() {
           <span className="ap-title--gold">EXPERIENCES</span>
         </h1>
 
-        <p className="ap-tagline">We don't just edit videos — we craft emotions.</p>
+        <p className="ap-tagline">We don&apos;t just edit videos — we craft emotions.</p>
 
         <div className="ap-cta">
-          <a href="#contact" className="ap-btn ap-btn--primary">▶ Start a Project</a>
-          <a href="#work" className="ap-btn ap-btn--secondary">View Our Work →</a>
+          <button onClick={() => goToSection("contact")} className="ap-btn ap-btn--primary">
+            ▶ Start a Project
+          </button>
+          <button onClick={() => goToSection("work")} className="ap-btn ap-btn--secondary">
+            View Our Work →
+          </button>
         </div>
       </section>
 
